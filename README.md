@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.com/m-rishabh-007-group/m-rishabh-007-project.git
+git remote add origin https://gitlab.com/m-rishabh-007-group/sentilytics_ai_engine.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-* [Set up project integrations](https://gitlab.com/m-rishabh-007-group/m-rishabh-007-project/-/settings/integrations)
+* [Set up project integrations](https://gitlab.com/m-rishabh-007-group/sentilytics_ai_engine./-/settings/integrations)
 
 ## Collaborate with your team
 
