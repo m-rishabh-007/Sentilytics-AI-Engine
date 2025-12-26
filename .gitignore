@@ -1,0 +1,12 @@
+# Project Specific
+data/raw/*
+!data/raw/.gitkeep
+scripts/playwright_spike/raw/*
+scripts/playwright_spike/logs/*
+__pycache__/
+*.env
+venv/
+*.log
+.DS_Store
+.idea/
+.vscode/

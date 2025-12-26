@@ -1,96 +1,179 @@
-Project name & 1-line pitch
-Sentilytics — multi-source AI feedback consolidation + bias compensation for MSMEs.
 
-Roles & responsibilities (who does what)
+# **Sentilytics — Multi-Source Customer Feedback Intelligence**
 
-You: architecture reviewer, ML/NLP lead, code reviewer.
+**One-line pitch**
+Sentilytics is a system that collects customer feedback from multiple online platforms and analyzes sentiment, topics, and bias to help MSMEs understand customer perception more accurately.
 
-Member A: Playwright scraper + scraping CI.
+---
 
-Member B: Data pipeline & DB.
+## 1. Team Roles & Responsibilities
 
-Member C: Frontend dashboard (React).
+**Project Lead / AI & Architecture**
 
-Member D: Testing & docs.
+* Owns overall system design and technical direction
+* Designs ML/NLP components (sentiment, topics, embeddings, bias handling)
+* Reviews and integrates code from all modules
 
-Constraints & goals (be explicit)
+**Scraping Engineer**
 
-Timeline: 8 weeks (2 months), working ~1 hr/day (≈56 hrs).
+* Builds Playwright-based scrapers using network interception
+* Ensures reliability, pagination handling, and data consistency
 
-Compute: small local dev machines; optional GPU: friend’s gaming PC (NVIDIA RTX—available for training heavy ops).
+**Backend / Data Engineer**
 
-Data: scraped live data + optional Yelp open dataset.
+* Handles data ingestion, normalization, and storage
+* Designs APIs and database interactions
 
-Deliverable: resume-ready, production-style microservices + GitLab CI, documented readme, demo video.
+**Frontend Engineer**
 
-MVP scope (must-have for the deadline)
+* Builds the analytics dashboard using React
+* Focuses on data visualization and usability
 
-Playwright network-interception scraper for 2 platforms (Google Maps + Twitter/X) that saves JSON.
+**Testing & Documentation**
 
-Normalization + basic sentiment classifier (pretrained transformer, fine-tune if time).
+* Writes test cases, validation checks, and documentation
+* Ensures features are reproducible and understandable
 
-Topic/aspect extraction (clustering + keyword mapping).
+> Responsibilities may overlap depending on workload and progress.
 
-Bias-compensation module (platform weighting + duplicate reviewer dedupe).
+---
 
-Dashboard that shows sentiment distribution, top topics, time trend and a basic correlation matrix across platforms.
+## 2. Constraints & Goals
 
-Dockerized microservices + GitLab CI for build/test.
+**Timeline**
 
-Non-functional requirements
+* 8 weeks total
+* ~1 hour/day per person (≈ 50–60 hours each)
 
-Response latency for dashboard requests < 3s for cached queries.
+**Compute Resources**
 
-Data privacy: anonymize PII in ingestion.
+* Local development machines
+* Optional access to an NVIDIA RTX gaming PC for heavier training tasks
 
-Scalability: microservices, simple K8s-friendly Docker compose.
+**Data Sources**
 
-Data & schema
+* Publicly accessible, scraped live data
+* Optional use of open datasets (e.g., Yelp) for benchmarking
 
-Example fields: source, review_id, business_id, raw_text, normalized_text, language, timestamp, rating, sentiment, topics, embedding_vector
+**Final Deliverable**
+A resume-ready, production-style project that includes:
 
-Provide small sample JSON(s) in /data/samples/ (upload these to repo).
+* working multi-platform data ingestion
+* meaningful analytics
+* clean repository structure
+* documentation and demo (screenshots/video)
 
-Tech stack (recommended)
+---
 
-Scraper: Playwright (Node or Python).
+## 3. MVP Scope (Must-Have)
 
-Backend microservices: Python FastAPI (AI engine) + Java Spring Boot for API façade only if needed (but keep single-language to save time). I recommend FastAPI + uvicorn.
+### Data Ingestion
 
-DB: PostgreSQL. Vector store: Postgres + pgvector (or Milvus later).
+* Playwright-based scraper using network interception
+* At least **two platforms** (Google Maps + Twitter/X)
+* Structured JSON output (no fragile HTML scraping)
 
-Embeddings / models: sentence-transformers (all-MiniLM-L6 for prod embeddings); Hugging Face transformers for sentiment.
+### Data Processing
 
-Frontend: React (Vite) + Recharts / Chart.js or Tailwind.
+* Text normalization and language detection
+* Sentiment classification using pretrained transformer models
+* Topic / aspect extraction using clustering and keyword mapping
 
-CI/CD: GitLab CI (pipelines for lint/test/docker build).
+### Bias Handling
 
-Containerization: Dockerfiles for each service.
+* Deduplication of repeated reviewers
+* Platform-level weighting to reduce overrepresentation bias
 
-Dev infra: Docker Compose for local, optional deploy with GitLab pages/Heroku/AWS later.
+### Analytics & Dashboard
 
-Bias compensation & correlation plan (short)
+* Sentiment distribution overview
+* Top topics/aspects
+* Time-based sentiment trends
+* Basic cross-platform correlation view
 
-Detect duplicate reviewers via hashed user identifier and downweight repeats.
+### Engineering
 
-Platform weighting: compute platform_weight = 1 / (platform_review_count ^ alpha) and apply to aggregated scores.
+* Dockerized services
+* GitLab CI for linting, tests, and builds
 
-Propensity score correction: estimate probability a user posts on platform A vs B, reweight accordingly.
+---
 
-Correlation: compute cross-platform time series and Pearson / DTW to measure lagged correlation.
+## 4. Non-Functional Requirements
 
-Evaluation & acceptance tests
+* **Performance:** dashboard responses under 3 seconds for cached queries
+* **Privacy:** anonymize usernames and identifiers during ingestion
+* **Scalability:** microservice-friendly design (Docker Compose first)
 
-Sentiment accuracy on small labeled set ≥ 75% (MVP).
+---
 
-Dashboard loads sample analytics within 3s.
+## 5. Data Structure (Indicative, Not Fixed)
 
-Scraper successfully saves structured JSON for N=50 items from each platform.
+Example fields (subject to refinement after data discovery):
 
-GitLab pipeline passes on PRs (lint + unit tests).
+```json
+{
+  "source": "google_maps",
+  "review_id": "...",
+  "business_id": "...",
+  "raw_text": "...",
+  "normalized_text": "...",
+  "language": "en",
+  "timestamp": "...",
+  "rating": 4,
+  "sentiment": "positive",
+  "topics": ["service", "pricing"]
+}
+```
 
-Milestones & weekly plan (see next section).
+Small real samples will be stored in `/SAMPLE_SCRAPED/`.
 
-GitLab workflow rules (issue templates, MR checklist — see below).
+---
 
-Contact / repo links (when available).
+## 6. Technology Stack (Recommended)
+
+* **Scraping:** Playwright (Python or Node.js)
+* **Backend / AI:** Python (FastAPI preferred)
+* **Database:** PostgreSQL (+ pgvector for embeddings)
+* **Models:** Hugging Face transformers, sentence-transformers
+* **Frontend:** React (Vite) with charting libraries
+* **DevOps:** Docker, Docker Compose, GitLab CI
+
+Final choices may evolve based on discovery findings.
+
+---
+
+## 7. Bias & Correlation Approach (High-Level)
+
+* Identify and downweight duplicate reviewers
+* Apply platform-level weighting to balance skewed data
+* Compare trends across platforms using time-series correlation
+
+Exact techniques will be finalized after inspecting real data.
+
+---
+
+## 8. Evaluation & Acceptance Criteria
+
+* Sentiment accuracy ≥ **75%** on a small labeled validation set
+* Successful scraping of ≥ **50 reviews per platform**
+* Dashboard renders analytics within **3 seconds**
+* GitLab CI passes for all merge requests
+
+---
+
+## 9. Project Timeline (Indicative)
+
+* **Weeks 1–2:** Data discovery & scraping validation
+* **Weeks 3–4:** Data pipeline + baseline ML models
+* **Weeks 5–6:** Bias handling + analytics
+* **Week 7:** Dashboard & system integration
+* **Week 8:** Testing, documentation, demo preparation
+
+---
+
+## 10. Workflow & Collaboration
+
+* All work is done via feature branches
+* Changes are merged through Merge Requests
+* No direct pushes to the main branch
+* Evidence (logs, samples, screenshots) required for validation work
